@@ -182,3 +182,9 @@ runs:
         #    sed -i 's/getname_flags(filename, lookup_flags, NULL)/getname_flags(filename, lookup_flags)/g' fs/open.c
         #  fi
         #fi
+        # TERAPKAN FIX SYS.C KHUSUS UNTUK KERNEL 6.1 DI SINI SEBELUM PATCH UTAMA JALAN
+        if [ "${{ inputs.version }}" = "android14-6.1" ]; then
+          echo "Applying Tensynos sys.c Fix for 6.1"
+          curl -sL https://raw.githubusercontent.com/bhazheng/Sultan_KernelSU_SUSFS/main/sys.c_fix.patch -o sys.c_fix.patch
+          patch -p1 < sys.c_fix.patch || true
+        fi
