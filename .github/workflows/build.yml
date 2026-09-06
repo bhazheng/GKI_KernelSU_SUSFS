@@ -125,6 +125,7 @@ jobs:
         os_patch_level: ${{ inputs.os_patch_level }}
         
     - name: Inject Custom Tensynos Kernel Source & Apply sys.c Fix
+      if: inputs.kernel_version == '6.1'
       shell: bash
       run: |
         # 1. Cari lokasi folder source kernel bawaan GKI
