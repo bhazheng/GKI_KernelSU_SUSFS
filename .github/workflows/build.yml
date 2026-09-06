@@ -144,7 +144,7 @@ jobs:
         # 3. Gantikan dengan android_kernel_google_tensynos
         echo "Mengunduh android_kernel_google_tensynos..."
         # Sesuaikan "-b main" dengan branch yang ingin Anda build
-        git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos -b main "$TARGET_DIR"
+        git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos "$TARGET_DIR"
 
     - name: Set Build Timestamp from Kernel Commit
       shell: bash
