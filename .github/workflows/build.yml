@@ -124,24 +124,36 @@ jobs:
         kernel_version: ${{ inputs.kernel_version }}
         os_patch_level: ${{ inputs.os_patch_level }}
         
-    - name: Inject Custom Tensynos Kernel Source
+    - name: Inject Custom Tensynos Kernel Source & Apply sys.c Fix
       shell: bash
       run: |
+        # 1. Cari lokasi folder source kernel bawaan GKI
         if [ -d "common" ]; then
           TARGET_DIR="common"
         elif [ -d "kernel/common" ]; then
           TARGET_DIR="kernel/common"
         else
-          echo "Error: Direktori source GKI bawaan tidak ditemukan."
+          echo "[-] Error: Direktori source GKI bawaan tidak ditemukan."
           exit 1
         fi
 
-        echo "Menghapus source GKI resmi di folder $TARGET_DIR..."
+        # 2. Hapus source bawaan Google dan ganti dengan Tensynos
+        echo "[+] Menghapus source GKI resmi di folder $TARGET_DIR..."
         rm -rf "$TARGET_DIR"
         
-        echo "Mengunduh android_kernel_google_tensynos branch android14-6.1.145..."
-        # Perhatikan perubahan argumen -b di bawah ini
-        git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos "$TARGET_DIR"
+        echo "[+] Mengunduh android_kernel_google_tensynos..."
+        git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos -b android14-6.1.145 "$TARGET_DIR"
+        
+        # 3. Masuk ke direktori kernel untuk melakukan patch
+        cd "$TARGET_DIR"
+        
+        # 4. Download patch menggunakan Raw URL
+        echo "[+] Mengunduh sys.c_fix.patch..."
+        curl -sL https://raw.githubusercontent.com/bhazheng/Sultan_KernelSU_SUSFS/main/sys.c_fix.patch -o sys.c_fix.patch
+        
+        # 5. Terapkan patch. Tambahkan || true agar workflow tidak mati jika patch menampilkan warning
+        echo "[+] Menerapkan sys.c_fix.patch..."
+        patch -p1 < sys.c_fix.patch || true
 
     - name: Set Build Timestamp from Kernel Commit
       shell: bash
