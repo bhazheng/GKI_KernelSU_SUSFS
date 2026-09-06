@@ -123,6 +123,28 @@ jobs:
         android_version: ${{ inputs.android_version }}
         kernel_version: ${{ inputs.kernel_version }}
         os_patch_level: ${{ inputs.os_patch_level }}
+        
+    - name: Inject Custom Tensynos Kernel Source
+      shell: bash
+      run: |
+        # 1. Deteksi lokasi folder source kernel bawaan GKI
+        if [ -d "common" ]; then
+          TARGET_DIR="common"
+        elif [ -d "kernel/common" ]; then
+          TARGET_DIR="kernel/common"
+        else
+          echo "Error: Direktori source GKI bawaan tidak ditemukan."
+          exit 1
+        fi
+
+        # 2. Hapus source bawaan Google
+        echo "Menghapus source GKI resmi di folder $TARGET_DIR..."
+        rm -rf "$TARGET_DIR"
+        
+        # 3. Gantikan dengan android_kernel_google_tensynos
+        echo "Mengunduh android_kernel_google_tensynos..."
+        # Sesuaikan "-b main" dengan branch yang ingin Anda build
+        git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos -b main "$TARGET_DIR"
 
     - name: Set Build Timestamp from Kernel Commit
       shell: bash
