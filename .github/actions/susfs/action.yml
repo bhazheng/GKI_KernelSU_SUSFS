@@ -56,29 +56,6 @@ runs:
         echo "Applying SUSFS enable patch to KernelSU (tiann) checkout (kernel/KernelSU/kernel)"
         patch -p1 < "$PATCH"
         
-    # MASUKKAN STEP FIX TENSYNOS TEPAT DI SINI
-    - name: Apply sys.c Fix untuk Tensynos (Khusus 6.1)
-      if: inputs.kernel_version == '6.1'
-      shell: bash
-      run: |
-        # 1. Pastikan kita berada di direktori source code utama, BUKAN di folder KernelSU
-        if [ -d "common" ]; then
-          TARGET_DIR="common"
-        elif [ -d "kernel/common" ]; then
-          TARGET_DIR="kernel/common"
-        else
-          echo "[-] Error: Direktori kernel tidak ditemukan."
-          exit 1
-        fi
-        
-        cd "$TARGET_DIR"
-        
-        # 2. Download dan terapkan patch ke kernel/sys.c
-        echo "[+] Mengunduh sys.c_fix.patch..."
-        curl -sL https://raw.githubusercontent.com/bhazheng/Sultan_KernelSU_SUSFS/main/sys.c_fix.patch -o sys.c_fix.patch
-        
-        echo "[+] Menerapkan sys.c_fix.patch..."
-        patch -p1 < sys.c_fix.patch || true
 
     - name: Enable SUSFS Kernel Configs
       uses: ./.github/actions/susfs-config
