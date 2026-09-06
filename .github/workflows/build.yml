@@ -144,16 +144,6 @@ jobs:
         echo "[+] Mengunduh android_kernel_google_tensynos..."
         git clone --depth=1 https://github.com/bhazheng/android_kernel_google_tensynos -b android14-6.1.145 "$TARGET_DIR"
         
-        # 3. Masuk ke direktori kernel untuk melakukan patch
-        cd "$TARGET_DIR"
-        
-        # 4. Download patch menggunakan Raw URL
-        echo "[+] Mengunduh sys.c_fix.patch..."
-        curl -sL https://raw.githubusercontent.com/bhazheng/Sultan_KernelSU_SUSFS/main/sys.c_fix.patch -o sys.c_fix.patch
-        
-        # 5. Terapkan patch. Tambahkan || true agar workflow tidak mati jika patch menampilkan warning
-        echo "[+] Menerapkan sys.c_fix.patch..."
-        patch -p1 < sys.c_fix.patch || true
 
     - name: Set Build Timestamp from Kernel Commit
       shell: bash
